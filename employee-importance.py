@@ -7,30 +7,42 @@ class Employee:
         self.subordinates = subordinates
 """
 
+
 class Solution:
-    def getImportance(self, employees: List['Employee'], id: int) -> int:
+    def getImportance(self, employees: List["Employee"], id: int) -> int:
 
         importanceMap = {}
 
         for emp in employees:
-            importanceMap[emp.id]= (emp.importance, emp.subordinates)
-        
-        visited = set()
+            importanceMap[emp.id] = (emp.importance, emp.subordinates)
 
-        queue = deque()
-        res = importanceMap[id][0]
+        # visited = set()
+        res = 0
 
-        for sub in importanceMap[id][1]:
-            queue.append(sub)
+        def dfs(nodeId):
+            nonlocal res
+            res += importanceMap[nodeId][0]
 
-        while queue:
-            sub = queue.popleft()
-            if sub not in visited:
-                visited.add(sub)
-                res+=importanceMap[sub][0]
+            sub = importanceMap[nodeId][1]
+
+            for item in sub:
+                dfs(item)
+
+            return
+
+        def bfs():
+            queue = deque()
+            nonlocal res
+            res+= importanceMap[id][0]
+            for sub in importanceMap[id][1]:
+                queue.append(sub)
+
+            while queue:
+                sub = queue.popleft()
+                res += importanceMap[sub][0]
                 for child in importanceMap[sub][1]:
                     queue.append(child)
-        
-        return res
-               
 
+        #dfs(id)
+        bfs()
+        return res
